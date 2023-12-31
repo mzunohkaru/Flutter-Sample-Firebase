@@ -63,8 +63,8 @@ class WelcomePage extends ConsumerWidget {
         } else {
           if (snapshot.data != null) {
             AnalyticsService().logPage("Home");
-            return const HomePage();
-            // return const CloudStoragePage();
+            // return const HomePage();
+            return const CloudStoragePage();
           } else {
             AnalyticsService().logPage("Auth");
             return const AuthPage();

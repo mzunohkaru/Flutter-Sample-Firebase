@@ -54,6 +54,8 @@ class CloudStoragePageState extends ConsumerState<CloudStoragePage> {
           ref.watch(imageStateProvider) == null
               ? const Text('No Image')
               : Image.memory(ref.watch(imageStateProvider)!),
+          Image.network(
+              "https://firebasestorage.googleapis.com/v0/b/flutter-reddit-sample.appspot.com/o/users%2FT0Hvz7avjZPmDEOszbL0K13vkO33%2Fimage.png?alt=media&token=a54ff201-79d0-480f-a5f9-bf618d8eeafd"),
           TextButton(
             onPressed: () {
               CloudStorageService().deletePic(ref);
@@ -80,9 +82,13 @@ class CloudStorageService {
 
       /// Firebase Cloud Storageにアップロード
       String uploadName = 'image.png';
-      final storageRef =
-          FirebaseStorage.instance.ref().child('users/$userID/$uploadName');
-      final task = await storageRef.putFile(file);
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('users/$userID/$uploadName')
+          .putFile(file);
+      final snapshot = await storageRef;
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      print("----------" + downloadUrl);
     } catch (e) {
       print(e);
     }
