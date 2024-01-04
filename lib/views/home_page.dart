@@ -1,5 +1,6 @@
-import 'package:firebase_sample/firebases/firestore.dart';
-import 'package:firebase_sample/repository/post_provider.dart';
+import 'package:firebase_sample/controllers/firestore.dart';
+import 'package:firebase_sample/controllers/storage.dart';
+import 'package:firebase_sample/repository/firebase_provider.dart';
 import 'package:firebase_sample/views/post_page.dart';
 import 'package:firebase_sample/views/settings_page.dart';
 import 'package:firebase_sample/widgets/post_card.dart';
@@ -53,18 +54,21 @@ class HomePageState extends ConsumerState<HomePage> {
                           email: post.id,
                           title: post.title,
                           body: post.body,
+                          fileType: post.fileType,
                           fileURL: post.fileURL,
                           favorite: post.favorite,
                           editedAt: post.editedAt!,
                           onTap: () {
                             // DataService().editPost(post);
                           },
-                          onLongPress: () {
-                            DataService()
+                          onLongPress: () async {
+                            await FirebaseStoreController()
                                 .deletePost(post.createdAt!.toIso8601String());
+                            await CloudStorageController()
+                                .deleteFile(post.createdAt!.toIso8601String());
                           },
                           onFavoriteBtn: () {
-                            DataService().favoritePost(post);
+                            FirebaseStoreController().favoritePost(post);
                           }),
                     ),
                   );

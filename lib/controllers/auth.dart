@@ -1,33 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_sample/repository/firebase_provider.dart';
+import 'package:firebase_sample/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-/// Authのサインイン状態のprovider
-final signInStateProvider = StateProvider((ref) => 'サインインまたはアカウントを作成してください');
-
-/// サインインユーザーの情報プロバイダー
-final userProvider = StateProvider<User?>((ref) => null);
-
-final userEmailProvider = StateProvider<String>((ref) => 'ログインしていません');
-
-final FirebaseAuth auth = FirebaseAuth.instance;
-
-class AuthService {
+class AuthController {
   /// サインイン処理
-  void signIn(WidgetRef ref, String id, String pass) async {
+  Future signIn(
+      {required WidgetRef ref,
+      required String email,
+      required String pass}) async {
     try {
-      /// credential にはアカウント情報が記録される
-      final credential = await auth.signInWithEmailAndPassword(
-        email: id,
+      await auth.signInWithEmailAndPassword(
+        email: email,
         password: pass,
       );
-
-      /// ユーザ情報の更新
-      ref.watch(userProvider.notifier).state =  credential.user;
-
-      /// 画面に表示
-      // ref.read(signInStateProvider.notifier).state = 'サインインできました!';
     }
 
     /// サインインに失敗した場合のエラー処理
@@ -37,19 +25,12 @@ class AuthService {
   }
 
   /// サインアップ処理
-  void createAccount(WidgetRef ref, String id, String pass) async {
+  Future signUp(WidgetRef ref, String email, String pass) async {
     try {
-      /// credential にはアカウント情報が記録される
-      final credential = await auth.createUserWithEmailAndPassword(
-        email: id,
+      await auth.createUserWithEmailAndPassword(
+        email: email,
         password: pass,
       );
-
-      /// ユーザ情報の更新
-      ref.watch(userProvider.notifier).state = credential.user;
-
-      /// 画面に表示
-      ref.read(signInStateProvider.notifier).state = 'アカウント作成に成功しました!';
     }
 
     /// アカウントに失敗した場合のエラー処理
@@ -61,11 +42,12 @@ class AuthService {
   }
 
   /// サインアップ処理 (メールアドレス確認)
-  void createAccount_verification(WidgetRef ref, String id, String pass) async {
+  Future createAccount_verification(
+      WidgetRef ref, String email, String pass) async {
     try {
       /// credential にはアカウント情報が記録される
       final credential = await auth.createUserWithEmailAndPassword(
-        email: id,
+        email: email,
         password: pass,
       );
 
@@ -82,14 +64,12 @@ class AuthService {
   }
 
   /// メールアドレス確認の判定
-  Future<bool> check_verification(WidgetRef ref, String id, String pass) async {
+  Future<bool> check_verification(WidgetRef ref) async {
     try {
       // 現在のユーザー情報を取得
       final User? user = auth.currentUser;
       print(user!.email);
-      if (user != null && user.emailVerified) {
-        // ユーザ情報の更新
-        ref.watch(userProvider.notifier).state = user;
+      if (user.emailVerified) {
         return true;
       }
     }
@@ -104,10 +84,9 @@ class AuthService {
   }
 
   /// パスワードをリセット
-  void resetPassword(String id) async {
+  Future resetPassword(String id) async {
     try {
       await auth.sendPasswordResetEmail(email: id);
-      print("パスワードリセット用のメールを送信しました");
     } catch (e) {
       print(e);
     }
@@ -145,6 +124,11 @@ class AuthService {
         // handle the error here
       }
     }
+  }
+
+  /// Sign Out
+  Future signOut() async {
+    await FirebaseAuth.instance.signOut();
   }
 
   /// エラーハンドラー

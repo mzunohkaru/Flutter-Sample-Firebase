@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_sample/firebases/auth.dart';
+import 'package:firebase_sample/controllers/auth.dart';
 import 'package:firebase_sample/main.dart';
+import 'package:firebase_sample/repository/firebase_provider.dart';
 import 'package:firebase_sample/repository/theme_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +12,11 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     /// ユーザー情報の取得
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-        ref.watch(userEmailProvider.notifier).state = user.email!;
-      }
-    });
+    // FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    //   if (user != null) {
+    //     ref.watch(userEmailProvider.notifier).state = user.email!;
+    //   }
+    // });
 
     final theme = ref.watch(themeProvider);
 
@@ -37,9 +37,7 @@ class SettingsPage extends ConsumerWidget {
         children: [
           ListTile(
             leading: const Text("ユーザー"),
-            title: Text(
-              ref.watch(userEmailProvider),
-            ),
+            title: Text(ref.watch(userProvider).value!.email.toString()),
           ),
           ListTile(
             leading: const Text("テーマ"),
@@ -51,12 +49,11 @@ class SettingsPage extends ConsumerWidget {
               child: const Text("サインアウト"),
             ),
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              ref.watch(userProvider.notifier).state = await null;
+              await AuthController().signOut();
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const WelcomePage()),
+                MaterialPageRoute(builder: (context) => const UserCheckPage()),
               );
             },
           ),

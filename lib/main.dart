@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_sample/firebases/analytics.dart';
-import 'package:firebase_sample/firebases/auth.dart';
+import 'package:firebase_sample/repository/firebase_provider.dart';
 import 'package:firebase_sample/repository/theme_provider.dart';
 import 'package:firebase_sample/views/auth/auth_page.dart';
 import 'package:firebase_sample/views/home_page.dart';
-import 'package:firebase_sample/views/storage_test_page.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -44,34 +41,28 @@ class MyApp extends ConsumerWidget {
         useMaterial3: true,
         typography: Typography.material2021(platform: defaultTargetPlatform),
       ),
-      home: const WelcomePage(),
+      home: const UserCheckPage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class WelcomePage extends ConsumerWidget {
-  const WelcomePage({super.key});
+class UserCheckPage extends ConsumerWidget {
+  const UserCheckPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else {
-          if (snapshot.data != null) {
-            AnalyticsService().logPage("Home");
-            // return const HomePage();
-            return const CloudStoragePage();
-          } else {
-            AnalyticsService().logPage("Auth");
-            return const AuthPage();
-          }
-        }
-      },
+    final asyncValue = ref.watch(userProvider);
+    return Scaffold(
+      body: Center(
+        child: asyncValue.when(
+          data: (user) {
+            return user != null ? const HomePage() : const AuthPage();
+          },
+          loading: () => const CircularProgressIndicator(),
+          error: (_, __) => const AuthPage(),
+        ),
+      ),
     );
   }
 }
-

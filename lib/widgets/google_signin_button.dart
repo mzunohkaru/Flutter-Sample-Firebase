@@ -1,4 +1,4 @@
-import 'package:firebase_sample/firebases/auth.dart';
+import 'package:firebase_sample/controllers/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -31,7 +31,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   _isSigningIn = true;
                 });
 
-                AuthService().googleSingin(context);
+                AuthController().googleSingin(context);
 
                 setState(() {
                   _isSigningIn = false;

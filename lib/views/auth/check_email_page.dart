@@ -1,4 +1,4 @@
-import 'package:firebase_sample/firebases/auth.dart';
+import 'package:firebase_sample/controllers/auth.dart';
 import 'package:firebase_sample/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,7 +52,7 @@ class _CheckEmailPageState extends ConsumerState<CheckEmailPage> {
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
-                AuthService().createAccount_verification(ref, widget.email, widget.pass);
+                AuthController().createAccount_verification(ref, widget.email, widget.pass);
               },
               child: const Text('確認メールの送信'),
             ),
@@ -63,12 +63,12 @@ class _CheckEmailPageState extends ConsumerState<CheckEmailPage> {
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
-                if (AuthService().check_verification(ref, widget.email, widget.pass) ==
+                if (AuthController().check_verification(ref) ==
                     true) {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const WelcomePage()),
+                        builder: (context) => const UserCheckPage()),
                   );
                 }else{
                   print("0000000000000");

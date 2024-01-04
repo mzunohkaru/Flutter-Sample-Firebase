@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:firebase_sample/firebases/firestore.dart';
+import 'package:firebase_sample/repository/firebase_provider.dart';
+import 'package:firebase_sample/widgets/video_player_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,17 +13,17 @@ final titleProvider =
 final bodyProvider =
     StateProvider.autoDispose((ref) => TextEditingController(text: ''));
 
+/// 画像表示用Provider
+final fileStateProvider = StateProvider<File?>((ref) => null);
+
+/// fileStateProviderが画像か動画か判定
+final fileTypeProvider = StateProvider<bool>((ref) => true);
+
 class PostPage extends ConsumerWidget {
   File? file;
+  final picker = ImagePicker();
 
   PostPage({super.key});
-
-  /// 画像を選択
-  Future pickupImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    file = File(image!.path);
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +31,7 @@ class PostPage extends ConsumerWidget {
     final title = ref.watch(titleProvider);
     final body = ref.watch(bodyProvider);
     // データを保存するメソッドを呼び出す
-    final dataService = ref.read(dataServiceProvider.notifier).state;
+    final firebaseStoreService = ref.read(firebaseStoreProvider.notifier).state;
 
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +40,11 @@ class PostPage extends ConsumerWidget {
           ElevatedButton.icon(
               onPressed: () async {
                 // データを保存するメソッドを使用する。ボタンを押すと実行される
-                await dataService.addPost(title.text, body.text, file);
+                await firebaseStoreService.addPost(title.text, body.text, file,
+                    ref.read(fileTypeProvider.notifier).state);
+
+                file = null;
+                ref.read(fileStateProvider.notifier).state = await null;
               },
               icon: const Icon(Icons.post_add),
               label: const Text("投稿"))
@@ -48,7 +53,7 @@ class PostPage extends ConsumerWidget {
       body: Center(
           child: ListView(
         padding: const EdgeInsets.all(10),
-        children: <Widget>[
+        children: [
           TextField(
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -65,17 +70,59 @@ class PostPage extends ConsumerWidget {
             controller: body,
           ),
           const SizedBox(height: 30.0),
-          InkWell(
-            onTap: pickupImage,
-            child: file == null
-                ? Container(
-                    margin: const EdgeInsets.all(10),
-                    height: 80,
-                    width: 55,
-                    child: const Icon(Icons.image),
-                  )
-                : Image.file(file!),
+          OutlinedButton(
+            onPressed: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return Wrap(
+                    children: <Widget>[
+                      ListTile(
+                        leading: const Icon(Icons.photo_library),
+                        title: const Text('画像を選択'),
+                        onTap: () async {
+                          /// 画像
+                          final pickedFileImage = await picker.pickImage(
+                              source: ImageSource.gallery);
+                          if (pickedFileImage != null) {
+                            file = File(pickedFileImage.path);
+                            ref.read(fileStateProvider.notifier).state = file;
+                            ref.read(fileTypeProvider.notifier).state = true;
+                          }
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.photo_camera),
+                        title: const Text('ビデオを選択'),
+                        onTap: () async {
+                          /// 動画
+                          final pickedFileVideo = await picker.pickVideo(
+                              source: ImageSource.gallery);
+                          if (pickedFileVideo != null) {
+                            file = File(pickedFileVideo.path);
+                            ref.read(fileStateProvider.notifier).state = file;
+                            ref.read(fileTypeProvider.notifier).state = false;
+                          }
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: const Text("ファイルを追加"),
           ),
+          const SizedBox(height: 10.0),
+          SizedBox(
+              child: ref.watch(fileStateProvider) != null
+                  ? ref.watch(fileTypeProvider)
+                      ? Image.file(
+                          ref.watch(fileStateProvider)!,
+                          fit: BoxFit.cover,
+                        )
+                      : VideoPlayerItem(
+                          videoUrl: ref.watch(fileStateProvider)!.path)
+                  : const SizedBox()),
         ],
       )),
     );
