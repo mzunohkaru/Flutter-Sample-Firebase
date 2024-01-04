@@ -1,9 +1,11 @@
+import 'package:firebase_sample/widgets/video_player_item.dart';
 import 'package:flutter/material.dart';
 
 class PostCard extends StatelessWidget {
   final String email;
   final String title;
   final String body;
+  final String fileType;
   final String fileURL;
   final int favorite;
   final DateTime editedAt;
@@ -16,13 +18,13 @@ class PostCard extends StatelessWidget {
       required this.email,
       required this.title,
       required this.body,
+      required this.fileType,
       required this.fileURL,
       required this.favorite,
       required this.editedAt,
       required this.onTap,
       required this.onLongPress,
       required this.onFavoriteBtn});
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +81,11 @@ class PostCard extends StatelessWidget {
             const SizedBox(height: 5),
             Align(alignment: Alignment.topLeft, child: Text(body)),
             const SizedBox(height: 5),
+            if (fileType == "image") Image.network(fileURL),
+            if (fileType == "video")
+              VideoPlayerItem(
+                videoUrl: fileURL,
+              ),
             Row(
               children: [
                 IconButton(

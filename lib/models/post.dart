@@ -11,6 +11,7 @@ class Post with _$Post {
     required String id,
     required String title,
     required String body,
+    required String fileType,
     required String fileURL,
     required int favorite,
     required List favoriteUsers,

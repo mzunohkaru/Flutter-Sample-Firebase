@@ -23,6 +23,7 @@ mixin _$Post {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get body => throw _privateConstructorUsedError;
+  String get fileType => throw _privateConstructorUsedError;
   String get fileURL => throw _privateConstructorUsedError;
   int get favorite => throw _privateConstructorUsedError;
   List<dynamic> get favoriteUsers => throw _privateConstructorUsedError;
@@ -45,6 +46,7 @@ abstract class $PostCopyWith<$Res> {
       {String id,
       String title,
       String body,
+      String fileType,
       String fileURL,
       int favorite,
       List<dynamic> favoriteUsers,
@@ -68,6 +70,7 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
     Object? id = null,
     Object? title = null,
     Object? body = null,
+    Object? fileType = null,
     Object? fileURL = null,
     Object? favorite = null,
     Object? favoriteUsers = null,
@@ -86,6 +89,10 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
       body: null == body
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
+              as String,
+      fileType: null == fileType
+          ? _value.fileType
+          : fileType // ignore: cast_nullable_to_non_nullable
               as String,
       fileURL: null == fileURL
           ? _value.fileURL
@@ -122,6 +129,7 @@ abstract class _$$PostImplCopyWith<$Res> implements $PostCopyWith<$Res> {
       {String id,
       String title,
       String body,
+      String fileType,
       String fileURL,
       int favorite,
       List<dynamic> favoriteUsers,
@@ -142,6 +150,7 @@ class __$$PostImplCopyWithImpl<$Res>
     Object? id = null,
     Object? title = null,
     Object? body = null,
+    Object? fileType = null,
     Object? fileURL = null,
     Object? favorite = null,
     Object? favoriteUsers = null,
@@ -160,6 +169,10 @@ class __$$PostImplCopyWithImpl<$Res>
       body: null == body
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
+              as String,
+      fileType: null == fileType
+          ? _value.fileType
+          : fileType // ignore: cast_nullable_to_non_nullable
               as String,
       fileURL: null == fileURL
           ? _value.fileURL
@@ -192,6 +205,7 @@ class _$PostImpl implements _Post {
       {required this.id,
       required this.title,
       required this.body,
+      required this.fileType,
       required this.fileURL,
       required this.favorite,
       required final List<dynamic> favoriteUsers,
@@ -208,6 +222,8 @@ class _$PostImpl implements _Post {
   final String title;
   @override
   final String body;
+  @override
+  final String fileType;
   @override
   final String fileURL;
   @override
@@ -229,7 +245,7 @@ class _$PostImpl implements _Post {
 
   @override
   String toString() {
-    return 'Post(id: $id, title: $title, body: $body, fileURL: $fileURL, favorite: $favorite, favoriteUsers: $favoriteUsers, createdAt: $createdAt, editedAt: $editedAt)';
+    return 'Post(id: $id, title: $title, body: $body, fileType: $fileType, fileURL: $fileURL, favorite: $favorite, favoriteUsers: $favoriteUsers, createdAt: $createdAt, editedAt: $editedAt)';
   }
 
   @override
@@ -240,6 +256,8 @@ class _$PostImpl implements _Post {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.body, body) || other.body == body) &&
+            (identical(other.fileType, fileType) ||
+                other.fileType == fileType) &&
             (identical(other.fileURL, fileURL) || other.fileURL == fileURL) &&
             (identical(other.favorite, favorite) ||
                 other.favorite == favorite) &&
@@ -258,6 +276,7 @@ class _$PostImpl implements _Post {
       id,
       title,
       body,
+      fileType,
       fileURL,
       favorite,
       const DeepCollectionEquality().hash(_favoriteUsers),
@@ -283,6 +302,7 @@ abstract class _Post implements Post {
       {required final String id,
       required final String title,
       required final String body,
+      required final String fileType,
       required final String fileURL,
       required final int favorite,
       required final List<dynamic> favoriteUsers,
@@ -297,6 +317,8 @@ abstract class _Post implements Post {
   String get title;
   @override
   String get body;
+  @override
+  String get fileType;
   @override
   String get fileURL;
   @override

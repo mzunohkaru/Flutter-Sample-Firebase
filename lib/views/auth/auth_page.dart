@@ -1,11 +1,13 @@
-import 'package:firebase_sample/firebases/auth.dart';
+import 'package:firebase_sample/controllers/auth.dart';
+import 'package:firebase_sample/repository/firebase_provider.dart';
+import 'package:firebase_sample/utils.dart';
 import 'package:firebase_sample/views/auth/check_email_page.dart';
 import 'package:firebase_sample/widgets/google_signin_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthPage extends ConsumerStatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+  const AuthPage({super.key});
 
   @override
   AuthPageState createState() => AuthPageState();
@@ -67,11 +69,10 @@ class AuthPageState extends ConsumerState<AuthPage> {
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
-                if (emailController.text.isEmpty ||
-                    passController.text.isEmpty) {
-                  return;
-                }
-                AuthService().signIn(ref, emailController.text, passController.text);
+                AuthController().signIn(
+                    ref: ref,
+                    email: emailController.text,
+                    pass: passController.text);
               },
               child: const Text('サインイン'),
             ),
@@ -86,7 +87,8 @@ class AuthPageState extends ConsumerState<AuthPage> {
                     passController.text.isEmpty) {
                   return;
                 }
-                AuthService().createAccount(ref, emailController.text, passController.text);
+                AuthController()
+                    .signUp(ref, emailController.text, passController.text);
               },
               child: const Text('サインアップ'),
             ),
@@ -97,10 +99,6 @@ class AuthPageState extends ConsumerState<AuthPage> {
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
-                if (emailController.text.isEmpty ||
-                    passController.text.isEmpty) {
-                  return;
-                }
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -119,7 +117,7 @@ class AuthPageState extends ConsumerState<AuthPage> {
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
-                AuthService().resetPassword(emailController.text);
+                AuthController().resetPassword(emailController.text);
               },
               child: const Text('パスワードリセット'),
             ),
@@ -129,6 +127,27 @@ class AuthPageState extends ConsumerState<AuthPage> {
           Container(
             margin: const EdgeInsets.all(10),
             child: const GoogleSignInButton(),
+          ),
+
+          Container(
+            margin: const EdgeInsets.all(10),
+            child: ElevatedButton(
+              onPressed: () {
+                AuthController().signOut();
+              },
+              child: const Text('サインアウト'),
+            ),
+          ),
+
+          Container(
+            margin: const EdgeInsets.all(10),
+            child: ElevatedButton(
+              onPressed: () {
+                print(userID);
+                print(ref.read(userProvider));
+              },
+              child: const Text('Check'),
+            ),
           ),
         ],
       ),
