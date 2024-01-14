@@ -35,13 +35,13 @@ Future main() async {
 
 class MyApp extends ConsumerWidget {
   MyApp({super.key});
-  
+
   FlexScheme usedScheme = FlexScheme.blueWhale;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      title: 'Counter Firebase',
+      title: 'Firebase',
       themeMode: ref.watch(themeProvider),
       theme: FlexThemeData.light(
         scheme: usedScheme,
