@@ -1,12 +1,17 @@
 import 'package:firebase_sample/controllers/auth.dart';
-import 'package:firebase_sample/main.dart';
-import 'package:firebase_sample/repository/firebase_provider.dart';
+import 'package:firebase_sample/controllers/messaging.dart';
 import 'package:firebase_sample/repository/theme_provider.dart';
+import 'package:firebase_sample/utils.dart';
+import 'package:firebase_sample/views/splash_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SettingsPage extends ConsumerWidget {
+  static Route<void> route() {
+    return MaterialPageRoute(builder: (context) => const SettingsPage());
+  }
+
   const SettingsPage({super.key});
 
   @override
@@ -37,11 +42,23 @@ class SettingsPage extends ConsumerWidget {
         children: [
           ListTile(
             leading: const Text("ユーザー"),
-            title: Text(ref.watch(userProvider).value!.email.toString()),
+            title: Text(auth.currentUser!.email!),
           ),
           ListTile(
             leading: const Text("テーマ"),
             title: themeButton,
+          ),
+          ListTile(
+            leading: const Text("通知"),
+            title: TextButton(
+                onPressed: () {
+                  /// FCMのパーミッション設定
+                  FirebaseMessagingService().setting();
+
+                  /// FCMのトークン表示(テスト用)
+                  FirebaseMessagingService().fcmGetToken();
+                },
+                child: const Text("Start FCM")),
           ),
           ElevatedButton(
             child: Container(
@@ -53,7 +70,7 @@ class SettingsPage extends ConsumerWidget {
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const UserCheckPage()),
+                MaterialPageRoute(builder: (context) => const SplashPage()),
               );
             },
           ),

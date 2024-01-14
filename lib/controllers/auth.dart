@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_sample/repository/firebase_provider.dart';
 import 'package:firebase_sample/utils.dart';
+import 'package:firebase_sample/views/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,6 +10,7 @@ class AuthController {
   /// サインイン処理
   Future signIn(
       {required WidgetRef ref,
+      required BuildContext context,
       required String email,
       required String pass}) async {
     try {
@@ -16,6 +18,9 @@ class AuthController {
         email: email,
         password: pass,
       );
+
+      Navigator.of(context)
+          .pushAndRemoveUntil(HomePage.route(), (route) => false);
     }
 
     /// サインインに失敗した場合のエラー処理
@@ -25,12 +30,19 @@ class AuthController {
   }
 
   /// サインアップ処理
-  Future signUp(WidgetRef ref, String email, String pass) async {
+  Future signUp(
+      {required WidgetRef ref,
+      required BuildContext context,
+      required String email,
+      required String pass}) async {
     try {
       await auth.createUserWithEmailAndPassword(
         email: email,
         password: pass,
       );
+
+      Navigator.of(context)
+          .pushAndRemoveUntil(HomePage.route(), (route) => false);
     }
 
     /// アカウントに失敗した場合のエラー処理
@@ -43,7 +55,7 @@ class AuthController {
 
   /// サインアップ処理 (メールアドレス確認)
   Future createAccount_verification(
-      WidgetRef ref, String email, String pass) async {
+      {required String email, required String pass}) async {
     try {
       /// credential にはアカウント情報が記録される
       final credential = await auth.createUserWithEmailAndPassword(
@@ -56,15 +68,13 @@ class AuthController {
     }
 
     /// アカウントに失敗した場合のエラー処理
-    on FirebaseAuthException catch (e) {
-      errorHandlerSignUp(ref, e);
-    } catch (e) {
+    catch (e) {
       print(e);
     }
   }
 
   /// メールアドレス確認の判定
-  Future<bool> check_verification(WidgetRef ref) async {
+  Future<bool> check_verification() async {
     try {
       // 現在のユーザー情報を取得
       final User? user = auth.currentUser;
@@ -75,9 +85,7 @@ class AuthController {
     }
 
     /// アカウントに失敗した場合のエラー処理
-    on FirebaseAuthException catch (e) {
-      errorHandlerSignUp(ref, e);
-    } catch (e) {
+    catch (e) {
       print(e);
     }
     return false;
@@ -93,7 +101,7 @@ class AuthController {
   }
 
   /// Google認証
-  Future googleSingin(BuildContext context) async {
+  Future googleSingin({required BuildContext context}) async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     final GoogleSignInAccount? googleSignInAccount =
@@ -112,7 +120,9 @@ class AuthController {
         // 認証情報をFirebaseに登録
         User? user = (await auth.signInWithCredential(credential)).user;
         if (user != null) {
-          print("Google認証完了");
+          // Google認証完了
+          Navigator.of(context)
+              .pushAndRemoveUntil(HomePage.route(), (route) => false);
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {

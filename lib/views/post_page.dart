@@ -23,6 +23,10 @@ class PostPage extends ConsumerWidget {
   File? file;
   final picker = ImagePicker();
 
+  static Route<void> route() {
+    return MaterialPageRoute(builder: (context) => PostPage());
+  }
+
   PostPage({super.key});
 
   @override

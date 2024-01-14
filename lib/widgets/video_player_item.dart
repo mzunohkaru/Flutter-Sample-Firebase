@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerItem extends StatefulWidget {
@@ -27,8 +26,8 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
 
   @override
   void dispose() {
-    super.dispose();
     videoPlayerController.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,9 +41,6 @@ class _VideoPlayerItemState extends State<VideoPlayerItem> {
       child: Container(
         width: size.width,
         height: size.height,
-        decoration: const BoxDecoration(
-          color: Colors.black,
-        ),
         child: VideoPlayer(videoPlayerController),
       ),
     );

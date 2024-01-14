@@ -1,19 +1,19 @@
 import 'package:firebase_sample/controllers/auth.dart';
-import 'package:firebase_sample/main.dart';
+import 'package:firebase_sample/views/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CheckEmailPage extends ConsumerStatefulWidget {
+class CheckEmailPage extends StatefulWidget {
   final String email;
   final String pass;
 
-  CheckEmailPage({required this.email, required this.pass});
+  const CheckEmailPage({required this.email, required this.pass});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CheckEmailPageState();
+  State<CheckEmailPage> createState() => _CheckEmailPageState();
 }
 
-class _CheckEmailPageState extends ConsumerState<CheckEmailPage> {
+class _CheckEmailPageState extends State<CheckEmailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +52,8 @@ class _CheckEmailPageState extends ConsumerState<CheckEmailPage> {
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
-                AuthController().createAccount_verification(ref, widget.email, widget.pass);
+                AuthController().createAccount_verification(
+                    email: widget.email, pass: widget.pass);
               },
               child: const Text('確認メールの送信'),
             ),
@@ -63,15 +64,11 @@ class _CheckEmailPageState extends ConsumerState<CheckEmailPage> {
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
-                if (AuthController().check_verification(ref) ==
-                    true) {
+                if (AuthController().check_verification() == true) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const UserCheckPage()),
+                    MaterialPageRoute(builder: (context) => const HomePage()),
                   );
-                }else{
-                  print("0000000000000");
                 }
               },
               child: const Text("メールアドレスの確認を完了"),

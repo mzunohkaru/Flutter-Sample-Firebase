@@ -11,11 +11,6 @@ final signInStateProvider = StateProvider.autoDispose((ref) => 'サインイン�
 
 final userEmailProvider = StateProvider.autoDispose<String>((ref) => 'ログインしていません');
 
-/// サインインユーザーの情報プロバイダー
-final userProvider = StreamProvider<User?>((ref) {
-  return auth.authStateChanges();
-});
-
 final firebaseStoreProvider =
     StateProvider<FirebaseStoreController>((ref) => FirebaseStoreController());
 

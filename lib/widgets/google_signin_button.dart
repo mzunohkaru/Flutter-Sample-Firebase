@@ -31,7 +31,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                   _isSigningIn = true;
                 });
 
-                AuthController().googleSingin(context);
+                AuthController().googleSingin(context: context);
 
                 setState(() {
                   _isSigningIn = false;

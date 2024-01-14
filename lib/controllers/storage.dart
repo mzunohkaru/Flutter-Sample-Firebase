@@ -5,14 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:video_compress/video_compress.dart';
 
 class CloudStorageController {
-  _compressVideo(String videoPath) async {
-    final compressedVideo = await VideoCompress.compressVideo(
-      videoPath,
-      quality: VideoQuality.MediumQuality,
-    );
-    return compressedVideo!.file;
-  }
-
   Future<String?> uploadImage(File? file, String createdAt) async {
     try {
       // メタデータを設定
@@ -35,10 +27,18 @@ class CloudStorageController {
     return null;
   }
 
+  _compressVideo(File videoFile) async {
+    String videoPath = videoFile.path;
+
+    final compressedVideo = await VideoCompress.compressVideo(
+      videoPath,
+      quality: VideoQuality.MediumQuality,
+    );
+    return compressedVideo!.file;
+  }
+
   Future<String?> uploadVideo(File? file, String createdAt) async {
     try {
-      String videoPath = file!.path;
-
       // メタデータを設定
       SettableMetadata metadata = SettableMetadata(
         contentType: 'video/mp4', // ここでファイルのタイプを指定します
@@ -48,7 +48,7 @@ class CloudStorageController {
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('users/$userID/$createdAt')
-          .putFile(await _compressVideo(videoPath), metadata);
+          .putFile(await _compressVideo(file!), metadata);
 
       final snapshot = await storageRef;
       final downloadURL = snapshot.ref.getDownloadURL();

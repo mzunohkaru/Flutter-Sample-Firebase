@@ -14,20 +14,25 @@ dependencies:
 
 
 
-
+  # Firebase
   firebase_core:
   firebase_analytics:
   firebase_auth:
   cloud_firestore:
   firebase_storage:
+  firebase_messaging:
 
-
+  # 画像
   image_picker:
   path:
+  # 状態管理
   flutter_riverpod:
+  # Googleサインイン
   google_sign_in:
+  # Video
   video_player:
-  video_compress: ^3.1.2
+  # 圧縮
+  video_compress:
 
   font_awesome_flutter:
   flex_color_scheme:

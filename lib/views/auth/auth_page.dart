@@ -1,13 +1,17 @@
 import 'package:firebase_sample/controllers/auth.dart';
 import 'package:firebase_sample/repository/firebase_provider.dart';
-import 'package:firebase_sample/utils.dart';
 import 'package:firebase_sample/views/auth/check_email_page.dart';
+import 'package:firebase_sample/views/home_page.dart';
 import 'package:firebase_sample/widgets/google_signin_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthPage extends ConsumerStatefulWidget {
   const AuthPage({super.key});
+
+  static Route<void> route() {
+    return MaterialPageRoute(builder: (context) => const AuthPage());
+  }
 
   @override
   AuthPageState createState() => AuthPageState();
@@ -30,7 +34,7 @@ class AuthPageState extends ConsumerState<AuthPage> {
           title: const Text('Auth Page'), automaticallyImplyLeading: false),
       body: ListView(
         padding: const EdgeInsets.all(10),
-        children: <Widget>[
+        children: [
           /// サインインのメッセージ表示
           Container(
             padding: const EdgeInsets.all(10),
@@ -71,6 +75,7 @@ class AuthPageState extends ConsumerState<AuthPage> {
               onPressed: () {
                 AuthController().signIn(
                     ref: ref,
+                    context: context,
                     email: emailController.text,
                     pass: passController.text);
               },
@@ -87,8 +92,11 @@ class AuthPageState extends ConsumerState<AuthPage> {
                     passController.text.isEmpty) {
                   return;
                 }
-                AuthController()
-                    .signUp(ref, emailController.text, passController.text);
+                AuthController().signUp(
+                    ref: ref,
+                    context: context,
+                    email: emailController.text,
+                    pass: passController.text);
               },
               child: const Text('サインアップ'),
             ),
@@ -99,6 +107,7 @@ class AuthPageState extends ConsumerState<AuthPage> {
             margin: const EdgeInsets.all(10),
             child: ElevatedButton(
               onPressed: () {
+
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -136,17 +145,6 @@ class AuthPageState extends ConsumerState<AuthPage> {
                 AuthController().signOut();
               },
               child: const Text('サインアウト'),
-            ),
-          ),
-
-          Container(
-            margin: const EdgeInsets.all(10),
-            child: ElevatedButton(
-              onPressed: () {
-                print(userID);
-                print(ref.read(userProvider));
-              },
-              child: const Text('Check'),
             ),
           ),
         ],
