@@ -1,5 +1,6 @@
 import 'package:firebase_sample/controllers/auth.dart';
 import 'package:firebase_sample/main.dart';
+import 'package:firebase_sample/views/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -68,7 +69,7 @@ class _CheckEmailPageState extends ConsumerState<CheckEmailPage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const UserCheckPage()),
+                        builder: (context) => const SplashPage()),
                   );
                 }else{
                   print("0000000000000");

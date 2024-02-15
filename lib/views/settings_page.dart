@@ -2,6 +2,7 @@ import 'package:firebase_sample/controllers/auth.dart';
 import 'package:firebase_sample/main.dart';
 import 'package:firebase_sample/repository/firebase_provider.dart';
 import 'package:firebase_sample/repository/theme_provider.dart';
+import 'package:firebase_sample/views/splash_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +38,7 @@ class SettingsPage extends ConsumerWidget {
         children: [
           ListTile(
             leading: const Text("ユーザー"),
-            title: Text(ref.watch(userProvider).value!.email.toString()),
+            // title: Text(ref.watch(userProvider).value!.email.toString()),
           ),
           ListTile(
             leading: const Text("テーマ"),
@@ -53,7 +54,7 @@ class SettingsPage extends ConsumerWidget {
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const UserCheckPage()),
+                MaterialPageRoute(builder: (context) => SplashPage()),
               );
             },
           ),

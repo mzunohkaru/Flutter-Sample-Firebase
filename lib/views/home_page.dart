@@ -10,6 +10,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
+  static Route<void> route() {
+    return MaterialPageRoute(builder: (context) => const HomePage());
+  }
+
   @override
   HomePageState createState() => HomePageState();
 }

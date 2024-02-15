@@ -9,6 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AuthPage extends ConsumerStatefulWidget {
   const AuthPage({super.key});
 
+  static Route<void> route() {
+    return MaterialPageRoute(builder: (context) => const AuthPage());
+  }
+
   @override
   AuthPageState createState() => AuthPageState();
 }
